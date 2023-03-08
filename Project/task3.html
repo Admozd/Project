@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div p { /*1*/
+            background-color: bisque;
+        }
+        div h2 { /*2*/
+            background-color: #96ec96;
+            transform: rotate(1deg);
+        }
+        div#test p { /*3*/
+            background-color: #b10f0f;
+            font-weight: bold;
+        }
+        div#test h2 { /*4*/
+            background-color: #5CCCCC;
+            font-weight: lighter;
+        }
+        *.bbb { /*5*/
+            background-color: blueviolet;
+            font-size: 40px;
+        }
+        div#test *.bbb { /*6*/
+            background-color: chocolate;
+            font-family: "Baskerville Old Face";
+            font-size: 19px;
+        }
+        p.bbb { /*7*/
+            background-color: chartreuse;
+            font-family: "Comic Sans MS";
+            font-size: 30px;
+        }
+        h2.bbb { /*8*/
+            background-color: gold;
+            font-family: "Century Schoolbook";
+            font-size: 15px;
+            padding-left: 100px;
+        }
+        div#test p.bbb { /*9*/
+            background-color: crimson;
+            transform: rotate(-1deg);
+            font-family: "Times New Roman";
+            font-weight: revert;
+        }
+        div h2 p { /*10*/
+            background-color: black;
+            color: white;
+            font-size: 25px;
+        }
+        *.bbb *.xxx { /*11*/
+            background-color: darkgreen;
+            color: gold;
+            padding: 50px;
+        }
+        h2.xxx p.bbb{/*12*/
+            background-color: olive;
+            color: blue;
+            border: 4px solid #2929a3;
+        }
+        p#test.bbb, p#test.xxx { /*13*/
+            background-color: burlywood;
+            color: brown;
+            border: 5px solid salmon;
+
+        }
+
+        .fff * { /*14*/
+            background-color: fuchsia;
+            color: darkorchid;
+            padding-left: 20px;
+            width: 430px;
+        }
+        .fff p{ /*15*/
+            background-color: darkgrey;
+            color: darkslategray;
+            height: 50px;
+            width: 500px;
+        }
+
+        p.fff { /*16*/
+            background-color: plum;
+            color: turquoise;
+            padding-left: 500px;
+            transform: rotate(1deg);
+        }
+
+        .fff *.bbb { /*17*/
+            background-color: tomato;
+            color: midnightblue;
+            margin: auto;
+        }
+
+        .fff h2.bbb { /*18*/
+            background-color: khaki;
+            color: indigo;
+            margin-left: 100px;
+        }
+
+        #test a:link { /*19*/
+            color: red;
+            text-decoration: none;
+        }
+        #test a:visited {
+            color: red;
+            text-decoration: none;
+        }
+        #test a:hover {
+            color: blue;
+            text-decoration: underline;
+        }
+
+
+         a.www:link { /*20*/
+             color: blue;
+             text-decoration: underline;
+         }
+        a.www:visited {
+             color: blue;
+             text-decoration: underline;
+         }
+        a.www:hover {
+             text-decoration: none;
+         }
+
+
+
+        #test a.www:link { /*21*/
+            color: red;
+        }
+        #test a.www:visited {
+            color: yellow;
+        }
+        #test a.www:hover {
+            color: firebrick;
+        }
+
+
+        .eee a.www:link { /*22*/
+            color: black;
+        }
+        .eee a.www:visited {
+            color: midnightblue;
+        }
+        .eee a.www:hover {
+            color: orangered;
+        }
+
+
+        p i { /*23*/
+            background-color: mediumvioletred;
+            color: black;
+        }
+
+        ul li { /*24*/
+            background-color: deepskyblue;
+            color: lightskyblue;
+            margin-left: 35px;
+        }
+
+        p a, a.test { /*25*/
+            background-color: coral;
+            color: steelblue;
+            font-size: 40px;
+        }
+
+        b+i { /*26*/
+            background-color: lightgreen;
+            color: black;
+            font-size: 50px;
+        }
+
+        b+div#test i { /*27*/
+            background-color: violet;
+            color: saddlebrown;
+            font-size: 15px;
+        }
+
+        ul+p { /*28*/
+            background-color: purple;
+            color: ivory;
+            font-size: 25px;
+        }
+
+        h1+p { /*29*/
+            background-color: palevioletred;
+            color: green;
+            border: 2px solid black;
+        }
+
+        h2+div#test p { /*30*/
+            background-color: forestgreen;
+            color: sienna;
+            font-size: 60px;
+        }
+
+        p * i { /*31*/
+            background-color: dodgerblue;
+            color: mediumvioletred;
+            font-size: 50px;
+
+        }
+    </style>
+
+
+
+
+
+
+
+</head>
+<body>
+    <div>
+        <p>Задание 1</p>
+        <h2>Задание 2</h2>
+    </div>
+
+    <div id="test">
+        <p>Задание 3</p>
+        <h2>Задание 4</h2>
+    </div>
+
+    <h3 class = "bbb">Задание 5</h3>
+
+    <div id="test">
+        <h3 class = "bbb">Задание 6</h3>
+    </div>
+
+    <p class = "bbb">Задание 7</p>
+    <h2 class = "bbb">Задание 8</h2>
+
+    <div id="test" >
+        <p class="bbb"> Задание 9</p>
+    </div>
+
+
+    <div>
+        <h2>
+            <p>Задание 10 </p>
+        </h2>
+    </div>
+
+    <div class = "bbb">
+        <p  class = "xxx"> Задание 11</p>
+    </div>
+
+    <h2 class = "xxx">
+        <p class = "bbb"> Задание 12 </p>
+    </h2>
+
+    <p id = "test" class = "bbb"> Задание 13 </p>
+
+    <div class = "fff">
+        <h3 > Задание 14 </h3>
+    </div>
+
+
+    <div class = "fff">
+        <p> Задание 15</p>
+    </div>
+
+    <p class = "fff"> Задание 16 </p>
+
+    <div class = "fff">
+        <h3 class = "bbb">Задание 17</h3>
+    </div>
+
+    <div class = "fff">
+        <h2 class = "bbb">Задание 18</h2>
+    </div>
+
+    <div id = "test">
+        <a href="#"> Задание 19 </a>
+    </div>
+
+
+    <a class ="www" href="#" > Задание 20 </a>
+
+    <div id = "test">
+        <a class = "www" href="#"> Задание 21 </a>
+    </div>
+
+    <div class = "eee">
+        <a class= "www" href="#"> Задание 22 </a>
+    </div>
+
+    <p><i> Задание 23 </i></p>
+
+    <ul>
+        <li> Задание 24 </li>
+    </ul>
+
+
+    <p>
+        <a class = "test" href="#"> Задание 25 </a>
+    </p>
+
+
+    <b></b>
+    <i> Задание 26 </i>
+
+
+    <b></b>
+    <div id="test">
+        <i> Задание 27 </i>
+    </div>
+
+    <ul>
+    </ul>
+    <p> Задание 28 </p>
+
+    <h1></h1>
+    <p> Задание 29 </p>
+
+    <h2></h2>
+    <div id="test">
+        <p> Задание 30 </p>
+    </div>
+
+    <p>
+        <b>
+            <i>
+                Задание 31
+            </i>
+        </b>
+    </p>
+</body>
+</html>
