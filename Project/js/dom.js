@@ -2,6 +2,12 @@ var Div = document.getElementById("1");
 Div.classList.add('comment');
 var a = '<textarea name = "comment" cols="70" rows="10"></textarea>';
 
+
+
+
+
+
+
 function del() {
     Div.firstElementChild.remove();
     
