@@ -1,0 +1,1292 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 14.7
+-- Dumped by pg_dump version 14.7
+
+-- Started on 2023-05-04 19:27:04
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3527 (class 1262 OID 13754)
+-- Name: postgres; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'Russian_Russia.1251';
+
+
+ALTER DATABASE postgres OWNER TO postgres;
+
+\connect postgres
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3528 (class 0 OID 0)
+-- Dependencies: 3527
+-- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- TOC entry 11 (class 2615 OID 16415)
+-- Name: News; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA "News";
+
+
+ALTER SCHEMA "News" OWNER TO postgres;
+
+--
+-- TOC entry 9 (class 2615 OID 24784)
+-- Name: pgagent; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA pgagent;
+
+
+ALTER SCHEMA pgagent OWNER TO postgres;
+
+--
+-- TOC entry 3529 (class 0 OID 0)
+-- Dependencies: 9
+-- Name: SCHEMA pgagent; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA pgagent IS 'pgAgent system tables';
+
+
+--
+-- TOC entry 2 (class 3079 OID 16384)
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 3530 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+--
+-- TOC entry 3 (class 3079 OID 24785)
+-- Name: pgagent; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgagent WITH SCHEMA pgagent;
+
+
+--
+-- TOC entry 3531 (class 0 OID 0)
+-- Dependencies: 3
+-- Name: EXTENSION pgagent; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgagent IS 'A PostgreSQL job scheduler';
+
+
+--
+-- TOC entry 252 (class 1255 OID 24783)
+-- Name: Delete_News(integer); Type: PROCEDURE; Schema: News; Owner: postgres
+--
+
+CREATE PROCEDURE "News"."Delete_News"(IN id_1 integer)
+    LANGUAGE sql
+    AS $$
+DELETE FROM "News"."News"
+WHERE "News_id" = id_1;
+DELETE FROM "News"."Comments"
+WHERE "News_id" = id_1;
+DELETE FROM "News"."Reactions"
+WHERE "News_id" = id_1;
+$$;
+
+
+ALTER PROCEDURE "News"."Delete_News"(IN id_1 integer) OWNER TO postgres;
+
+--
+-- TOC entry 251 (class 1255 OID 16615)
+-- Name: procedure_1(); Type: PROCEDURE; Schema: News; Owner: postgres
+--
+
+CREATE PROCEDURE "News".procedure_1()
+    LANGUAGE sql
+    AS $$
+UPDATE "News"."News" 
+SET text = 'Новость не актуальна', header = 'Новость не актуальна'
+WHERE date < '2021-01-01';
+$$;
+
+
+ALTER PROCEDURE "News".procedure_1() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 231 (class 1259 OID 16573)
+-- Name: BindingTable; Type: TABLE; Schema: News; Owner: postgres
+--
+
+CREATE TABLE "News"."BindingTable" (
+    "News_id" integer NOT NULL,
+    "Category_id" integer NOT NULL
+);
+
+
+ALTER TABLE "News"."BindingTable" OWNER TO postgres;
+
+--
+-- TOC entry 3532 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: TABLE "BindingTable"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON TABLE "News"."BindingTable" IS 'Связующая таблица между таблицей новостей и таблицей категорий';
+
+
+--
+-- TOC entry 3533 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: COLUMN "BindingTable"."News_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."BindingTable"."News_id" IS 'Идентификатор новости';
+
+
+--
+-- TOC entry 3534 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: COLUMN "BindingTable"."Category_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."BindingTable"."Category_id" IS 'Идентификатор категории';
+
+
+--
+-- TOC entry 230 (class 1259 OID 16572)
+-- Name: BindingTable_Category_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."BindingTable_Category_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."BindingTable_Category_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3535 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: BindingTable_Category_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."BindingTable_Category_id_seq" OWNED BY "News"."BindingTable"."Category_id";
+
+
+--
+-- TOC entry 229 (class 1259 OID 16571)
+-- Name: BindingTable_News_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."BindingTable_News_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."BindingTable_News_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3536 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: BindingTable_News_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."BindingTable_News_id_seq" OWNED BY "News"."BindingTable"."News_id";
+
+
+--
+-- TOC entry 220 (class 1259 OID 16430)
+-- Name: Categories; Type: TABLE; Schema: News; Owner: postgres
+--
+
+CREATE TABLE "News"."Categories" (
+    "Category_id" integer NOT NULL,
+    name character varying(200) NOT NULL
+);
+
+
+ALTER TABLE "News"."Categories" OWNER TO postgres;
+
+--
+-- TOC entry 3537 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: TABLE "Categories"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON TABLE "News"."Categories" IS 'Таблица категорий';
+
+
+--
+-- TOC entry 3538 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN "Categories"."Category_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Categories"."Category_id" IS 'Идентификатор категории';
+
+
+--
+-- TOC entry 3539 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN "Categories".name; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Categories".name IS 'Имя категории';
+
+
+--
+-- TOC entry 219 (class 1259 OID 16429)
+-- Name: Categories_Category_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."Categories_Category_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."Categories_Category_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3540 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: Categories_Category_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."Categories_Category_id_seq" OWNED BY "News"."Categories"."Category_id";
+
+
+--
+-- TOC entry 228 (class 1259 OID 16500)
+-- Name: Comments; Type: TABLE; Schema: News; Owner: postgres
+--
+
+CREATE TABLE "News"."Comments" (
+    "Comment_id" integer NOT NULL,
+    "News_id" integer NOT NULL,
+    comment character varying NOT NULL,
+    nickname character varying(75)
+);
+
+
+ALTER TABLE "News"."Comments" OWNER TO postgres;
+
+--
+-- TOC entry 3541 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: TABLE "Comments"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON TABLE "News"."Comments" IS 'Таблица комментариев';
+
+
+--
+-- TOC entry 3542 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN "Comments"."Comment_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Comments"."Comment_id" IS 'Идентификатор комментария';
+
+
+--
+-- TOC entry 3543 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN "Comments"."News_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Comments"."News_id" IS 'Идентификатор новости';
+
+
+--
+-- TOC entry 3544 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN "Comments".comment; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Comments".comment IS 'Текст комментария';
+
+
+--
+-- TOC entry 3545 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN "Comments".nickname; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Comments".nickname IS 'Имя пользователя';
+
+
+--
+-- TOC entry 226 (class 1259 OID 16498)
+-- Name: Comments_Comment_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."Comments_Comment_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."Comments_Comment_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3546 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: Comments_Comment_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."Comments_Comment_id_seq" OWNED BY "News"."Comments"."Comment_id";
+
+
+--
+-- TOC entry 227 (class 1259 OID 16499)
+-- Name: Comments_News_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."Comments_News_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."Comments_News_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3547 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: Comments_News_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."Comments_News_id_seq" OWNED BY "News"."Comments"."News_id";
+
+
+--
+-- TOC entry 218 (class 1259 OID 16419)
+-- Name: News; Type: TABLE; Schema: News; Owner: postgres
+--
+
+CREATE TABLE "News"."News" (
+    "News_id" integer NOT NULL,
+    header character varying(150),
+    text character varying,
+    date date,
+    image bytea,
+    "Source_id" integer,
+    "Category_id" integer
+);
+
+
+ALTER TABLE "News"."News" OWNER TO postgres;
+
+--
+-- TOC entry 3548 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: TABLE "News"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON TABLE "News"."News" IS 'Таблица новостей';
+
+
+--
+-- TOC entry 3549 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News"."News_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News"."News_id" IS 'Идентификатор новости';
+
+
+--
+-- TOC entry 3550 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News".header; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News".header IS 'Название заголовка новости';
+
+
+--
+-- TOC entry 3551 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News".text; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News".text IS 'Основное содержание новости';
+
+
+--
+-- TOC entry 3552 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News".date; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News".date IS 'Дата появления новости';
+
+
+--
+-- TOC entry 3553 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News".image; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News".image IS 'Картина новости';
+
+
+--
+-- TOC entry 3554 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News"."Source_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News"."Source_id" IS 'Идентификатор источника';
+
+
+--
+-- TOC entry 3555 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN "News"."Category_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."News"."Category_id" IS 'Идентификатор категории';
+
+
+--
+-- TOC entry 216 (class 1259 OID 16417)
+-- Name: News_Author_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."News_Author_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."News_Author_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3556 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: News_Author_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."News_Author_id_seq" OWNED BY "News"."News"."Source_id";
+
+
+--
+-- TOC entry 217 (class 1259 OID 16418)
+-- Name: News_Category_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."News_Category_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."News_Category_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3557 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: News_Category_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."News_Category_id_seq" OWNED BY "News"."News"."Category_id";
+
+
+--
+-- TOC entry 215 (class 1259 OID 16416)
+-- Name: News_News_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."News_News_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."News_News_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3558 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: News_News_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."News_News_id_seq" OWNED BY "News"."News"."News_id";
+
+
+--
+-- TOC entry 225 (class 1259 OID 16486)
+-- Name: Reactions; Type: TABLE; Schema: News; Owner: postgres
+--
+
+CREATE TABLE "News"."Reactions" (
+    "Reaction_id" integer NOT NULL,
+    "News_id" integer NOT NULL,
+    reaction_plus integer NOT NULL,
+    reaction_minus integer NOT NULL
+);
+
+
+ALTER TABLE "News"."Reactions" OWNER TO postgres;
+
+--
+-- TOC entry 3559 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: TABLE "Reactions"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON TABLE "News"."Reactions" IS 'Таблица с реакциями к новостям';
+
+
+--
+-- TOC entry 3560 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: COLUMN "Reactions"."Reaction_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Reactions"."Reaction_id" IS 'Идентификатор реакции';
+
+
+--
+-- TOC entry 3561 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: COLUMN "Reactions"."News_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Reactions"."News_id" IS 'Идентификатор новости';
+
+
+--
+-- TOC entry 3562 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: COLUMN "Reactions".reaction_plus; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Reactions".reaction_plus IS 'Реакция "+"';
+
+
+--
+-- TOC entry 3563 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: COLUMN "Reactions".reaction_minus; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Reactions".reaction_minus IS 'Реакция "-"';
+
+
+--
+-- TOC entry 224 (class 1259 OID 16485)
+-- Name: Reactions_News_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."Reactions_News_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."Reactions_News_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3564 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: Reactions_News_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."Reactions_News_id_seq" OWNED BY "News"."Reactions"."News_id";
+
+
+--
+-- TOC entry 223 (class 1259 OID 16484)
+-- Name: Reactions_Reaction_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."Reactions_Reaction_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."Reactions_Reaction_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3565 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: Reactions_Reaction_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."Reactions_Reaction_id_seq" OWNED BY "News"."Reactions"."Reaction_id";
+
+
+--
+-- TOC entry 222 (class 1259 OID 16475)
+-- Name: Sources; Type: TABLE; Schema: News; Owner: postgres
+--
+
+CREATE TABLE "News"."Sources" (
+    "Source_id" integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE "News"."Sources" OWNER TO postgres;
+
+--
+-- TOC entry 3566 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: TABLE "Sources"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON TABLE "News"."Sources" IS 'Таблица источников новостей';
+
+
+--
+-- TOC entry 3567 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: COLUMN "Sources"."Source_id"; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Sources"."Source_id" IS 'Идентификатор источника';
+
+
+--
+-- TOC entry 3568 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: COLUMN "Sources".name; Type: COMMENT; Schema: News; Owner: postgres
+--
+
+COMMENT ON COLUMN "News"."Sources".name IS 'Имя источника';
+
+
+--
+-- TOC entry 221 (class 1259 OID 16474)
+-- Name: Sources_Sources_id_seq; Type: SEQUENCE; Schema: News; Owner: postgres
+--
+
+CREATE SEQUENCE "News"."Sources_Sources_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "News"."Sources_Sources_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3569 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: Sources_Sources_id_seq; Type: SEQUENCE OWNED BY; Schema: News; Owner: postgres
+--
+
+ALTER SEQUENCE "News"."Sources_Sources_id_seq" OWNED BY "News"."Sources"."Source_id";
+
+
+--
+-- TOC entry 235 (class 1259 OID 16606)
+-- Name: Srcs; Type: VIEW; Schema: News; Owner: postgres
+--
+
+CREATE VIEW "News"."Srcs" AS
+ SELECT "News"."News_id",
+    "News".header,
+    "News".text,
+    "News".date,
+    "News".image,
+    "News"."Source_id",
+    "News"."Category_id"
+   FROM "News"."News"
+  WHERE ("News"."Source_id" = 1)
+  WITH CASCADED CHECK OPTION;
+
+
+ALTER TABLE "News"."Srcs" OWNER TO postgres;
+
+--
+-- TOC entry 233 (class 1259 OID 16598)
+-- Name: fresh_news; Type: VIEW; Schema: News; Owner: postgres
+--
+
+CREATE VIEW "News".fresh_news AS
+ SELECT "Reactions"."News_id",
+    avg("Reactions".reaction_plus) AS avg
+   FROM "News"."Reactions"
+  GROUP BY "Reactions"."News_id";
+
+
+ALTER TABLE "News".fresh_news OWNER TO postgres;
+
+--
+-- TOC entry 234 (class 1259 OID 16602)
+-- Name: name_of_sources; Type: VIEW; Schema: News; Owner: postgres
+--
+
+CREATE VIEW "News".name_of_sources AS
+ SELECT "News".header,
+    "News".text,
+    "Sources".name
+   FROM ("News"."News"
+     JOIN "News"."Sources" ON (("News"."Source_id" = "Sources"."Source_id")));
+
+
+ALTER TABLE "News".name_of_sources OWNER TO postgres;
+
+--
+-- TOC entry 232 (class 1259 OID 16594)
+-- Name: top_news; Type: VIEW; Schema: News; Owner: postgres
+--
+
+CREATE VIEW "News".top_news AS
+ SELECT "News"."News_id",
+    "News".text
+   FROM "News"."News"
+  WHERE ("News"."News_id" IN ( SELECT "Reactions"."News_id"
+           FROM "News"."Reactions"
+          WHERE ("Reactions".reaction_plus > 15)));
+
+
+ALTER TABLE "News".top_news OWNER TO postgres;
+
+--
+-- TOC entry 3278 (class 2604 OID 16576)
+-- Name: BindingTable News_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."BindingTable" ALTER COLUMN "News_id" SET DEFAULT nextval('"News"."BindingTable_News_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3279 (class 2604 OID 16577)
+-- Name: BindingTable Category_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."BindingTable" ALTER COLUMN "Category_id" SET DEFAULT nextval('"News"."BindingTable_Category_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3272 (class 2604 OID 16433)
+-- Name: Categories Category_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Categories" ALTER COLUMN "Category_id" SET DEFAULT nextval('"News"."Categories_Category_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3276 (class 2604 OID 16503)
+-- Name: Comments Comment_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Comments" ALTER COLUMN "Comment_id" SET DEFAULT nextval('"News"."Comments_Comment_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3277 (class 2604 OID 16504)
+-- Name: Comments News_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Comments" ALTER COLUMN "News_id" SET DEFAULT nextval('"News"."Comments_News_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3271 (class 2604 OID 16422)
+-- Name: News News_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."News" ALTER COLUMN "News_id" SET DEFAULT nextval('"News"."News_News_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3274 (class 2604 OID 16489)
+-- Name: Reactions Reaction_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Reactions" ALTER COLUMN "Reaction_id" SET DEFAULT nextval('"News"."Reactions_Reaction_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3275 (class 2604 OID 16490)
+-- Name: Reactions News_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Reactions" ALTER COLUMN "News_id" SET DEFAULT nextval('"News"."Reactions_News_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3273 (class 2604 OID 16478)
+-- Name: Sources Source_id; Type: DEFAULT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Sources" ALTER COLUMN "Source_id" SET DEFAULT nextval('"News"."Sources_Sources_id_seq"'::regclass);
+
+
+--
+-- TOC entry 3521 (class 0 OID 16573)
+-- Dependencies: 231
+-- Data for Name: BindingTable; Type: TABLE DATA; Schema: News; Owner: postgres
+--
+
+INSERT INTO "News"."BindingTable" ("News_id", "Category_id") VALUES (4, 4);
+INSERT INTO "News"."BindingTable" ("News_id", "Category_id") VALUES (3, 3);
+INSERT INTO "News"."BindingTable" ("News_id", "Category_id") VALUES (2, 2);
+INSERT INTO "News"."BindingTable" ("News_id", "Category_id") VALUES (1, 1);
+
+
+--
+-- TOC entry 3510 (class 0 OID 16430)
+-- Dependencies: 220
+-- Data for Name: Categories; Type: TABLE DATA; Schema: News; Owner: postgres
+--
+
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (1, 'спорт');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (2, 'IT-технологии');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (3, 'политика');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (4, 'наука');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (5, 'культура');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (6, 'экономика');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (7, 'общество');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (8, 'религия');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (9, 'путешествия');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (10, 'мир');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (11, 'армия');
+INSERT INTO "News"."Categories" ("Category_id", name) VALUES (12, 'происшествия');
+
+
+--
+-- TOC entry 3518 (class 0 OID 16500)
+-- Dependencies: 228
+-- Data for Name: Comments; Type: TABLE DATA; Schema: News; Owner: postgres
+--
+
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (1, 1, 'all good...', 'RedParrot1');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (2, 2, 'this can''t be', 'GreatLion3');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (3, 3, 'good news!', 'grek472');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (4, 4, 'i like that!', 'quadra222');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (5, 5, 'interesting...', 'qweqrr213');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (6, 6, 'i agree!', 'grek472');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (7, 7, 'this is terrible!', 'top232');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (8, 8, '...', '12weerw21');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (9, 9, 'you did well!', 'iggy52');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (10, 10, 'i''m confused', 'GreatLion3');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (11, 11, 'such a nice person', 'aasdaasdd23');
+INSERT INTO "News"."Comments" ("Comment_id", "News_id", comment, nickname) VALUES (12, 12, 'thanks a lot!', 'aasdaasdd23');
+
+
+--
+-- TOC entry 3508 (class 0 OID 16419)
+-- Dependencies: 218
+-- Data for Name: News; Type: TABLE DATA; Schema: News; Owner: postgres
+--
+
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (2, 'Уральские учёные разрабатывают технологии для коррекции генетических дефектов', 'Ученые Института иммунологии и физиологии УрО РАН и УрФУ разрабатывают методы генетической диагностики и терапии болезней, вызванных первичным иммунодефицитом. Это врожденное нарушение работы одного или нескольких звеньев иммунной системы, которое предрасполагает к развитию частых, затяжных, тяжело поддающихся лечению заболеваний, причем не только инфекционных, но и аутоиммунных, аутовоспалительных и онкологии. Например, системная красная волчанка, различные васкулиты, хронические пневмонии и даже выпадение волос. Сегодня первичные иммунодефициты лечат заместительной терапией и трансплантацией гемопоэтических стволовых клеток. Но лечение таких болезней обещает стать более эффективным при помощи замены генетических дефектов в ДНК человека. Информация взята с портала «Научная Россия» (https://scientificrussia.ru/)', '2022-09-12', NULL, 2, 2);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (1, 'У берегов Норвегии протестируют 135-метровый ветряк с вертикальными лопастями для морских электростанций', 'Шведская компания SeaTwirl подписала контракт с оператором Westcon на строительство и развёртывание у берегов Норвегии своей первой плавучей ветряной турбины с вертикально ориентированной осью вращения мощностью 1 МВт.', '2022-09-14', NULL, 1, 2);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (3, 'YouTube стал показывать по пять рекламных роликов у некоторых пользователей', 'Видеосервис YouTube начал демонстрировать по пять рекламных роликов перед началом видео, сообщают пользователи в Twitter. В настоящий момент нововведение представлено для ограниченного числа участников платформы, которые не имеют премиальной подписки.', '2022-09-13', NULL, 3, 2);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (4, 'Ростех разработал уникальный мобильный комплекс для поиска угнанных автомобилей', 'Холдинг «Росэлектроника» Госкорпорации Ростех разработал первое в России мобильное решение для выявления в транспортном потоке автомобилей, находящихся в угоне или розыске, а также снятых с регистрационного учета. Аппаратно-программный комплекс «Розыск-Nano» устанавливается в патрульной машине, распознает государственные регистрационные знаки (ГРЗ) транспортных средств и в режиме реального времени проверяет их по базам данных. Также комплекс взаимодействует с системой розыска автомобилей ГИБДД России «Паутина». ', '2022-09-13', NULL, 4, 2);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (5, 'Биография Чжао Лэцзи, избранного спикером парламента Китая', 'Китайский политический деятель Чжао Лэцзи родился 8 марта 1957 года в городе Синин провинции Цинхай. Его отец, Чжао Симинь, учился в СССР...', '2023-03-10', NULL, 1, 3);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (6, 'В Петербурге объявили желтый уровень погодной опасности', 'Желтый уровень опасности, который означает потенциально опасные погодные условия, объявлен в Санкт-Петербурге из-за ожидаемого в субботу снегопада, сообщила пресс-служба администрации губернатора...', '2023-03-10', NULL, 1, 7);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (7, 'В Махачкале загорелся Эльтавский лес', 'Пожар произошел в пятницу в Эльтавском лесу, расположенном на территории Махачкалы, сообщили РИА Новости в пресс-службе главного управления МЧС России по республике.
+«
+"Поступило сообщение о возгорании в Эльтавском лесу в Махачкале. На место направлены четыре пожарных расчета", – сообщили в ведомстве...', '2023-03-10', NULL, 1, 12);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (8, 'Уроженец Болгарии выиграл чемпионат России по спортивной гимнастике', 'Даниел Маринов, у которого двойное гражданство, впервые в своей карьере завоевал золото национального чемпионата в личном многоборье. Олимпийский чемпион Никита Нагорный занял второе место, Сергей Найдин стал третьим...', '2023-03-10', NULL, 2, 1);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (9, 'Спад экономики в 2022 году оказался меньше, чем в пандемию', 'Российская экономика в 2022 году сократилась на 2,1%, показала первая оценка Росстата. Еще месяц назад президент Путин приводил оценку минус 2,5%. Прошлогодний спад ВВП оказался меньше, чем в пандемийном 2020-м...', '2023-02-20', NULL, 2, 6);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (10, 'ЦБ летом представит новые банкноты номиналом 1 тыс. и 5 тыс. рублей', 'Банк России планирует уже летом 2023 года презентовать модернизированные банкноты в 1 тыс. и 5 тыс. рублей. Об этом сообщил зампредседателя ЦБ РФ Сергей Белов на организованной Ассоциацией банков России ежегодной встрече кредитных организаций с регулятором...', '2023-03-02', NULL, 4, 6);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (11, 'В России возобновили выпуск биометрических загранпаспортов', 'Новые загранпаспорта оснащены уникальным чипом и поэтому являются биометрическими. Встроенный в них электронный носитель информации содержит сведения о владельце и сканы отпечатков его пальцев. Документы нового образца рассчитаны на 10 лет...', '2023-03-10', NULL, 4, 7);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (12, 'Названы топ-5 самых бронируемых курортов России на лето', 'Сочи назвали самым востребованным курортом России для летнего отдыха. Информация об этом появилась на сайте Ассоциации туроператоров России (АТОР).
+
+По данным представителей туристической области, лидирует в рейтинге летних продаж на 2023 год Сочи с долей 26 процентов продаж, на второй строчке разместилась Анапа с долей продаж в 17 процентов. Далее следуют Геленджик и Минеральные Воды...', '2023-03-07', NULL, 2, 9);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (13, 'Россия достраивает свой большой коллайдер. Что ее ждет после запуска
+', 'В середине 1950-х практически одновременно в мире появились два крупных научных центра по изучению фундаментальных свойств материи: ЦЕРН в Швейцарии и ОИЯИ в СССР. Учредителями последнего стали 13 государств, в основном — представители социалистического лагеря...', '2022-09-13', NULL, NULL, NULL);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (15, 'Microsoft прекратит выпуск обновлений для Windows 10', 'Microsoft прекращает выпуск крупных обновлений для Windows 10. Об этом говорится в сообщении компании...', '2023-05-01', NULL, 2, 2);
+INSERT INTO "News"."News" ("News_id", header, text, date, image, "Source_id", "Category_id") VALUES (14, 'В Британии сообщили о разработке способного эффективно выявлять рак ИИ', 'Британские врачи и ученые обучили искусственный интеллект выявлять на КТ-снимках злокачественные опухоли. 
+		Он делает это с высокой эффективностью, 
+		что в будущем может помочь выявлять рак на ранней стадии и успешнее лечить больных...', '2023-05-01', NULL, 1, 2);
+
+
+--
+-- TOC entry 3515 (class 0 OID 16486)
+-- Dependencies: 225
+-- Data for Name: Reactions; Type: TABLE DATA; Schema: News; Owner: postgres
+--
+
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (1, 1, 14, 3);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (2, 2, 12, 1);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (3, 4, 25, 12);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (4, 3, 2, 17);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (6, 5, 27, 5);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (8, 7, 20, 13);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (12, 10, 18, 8);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (5, 3, 12, 4);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (7, 3, 6, 1);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (9, 10, 11, 7);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (10, 2, 15, 3);
+INSERT INTO "News"."Reactions" ("Reaction_id", "News_id", reaction_plus, reaction_minus) VALUES (11, 1, 12, 2);
+
+
+--
+-- TOC entry 3512 (class 0 OID 16475)
+-- Dependencies: 222
+-- Data for Name: Sources; Type: TABLE DATA; Schema: News; Owner: postgres
+--
+
+INSERT INTO "News"."Sources" ("Source_id", name) VALUES (1, 'ria.ru');
+INSERT INTO "News"."Sources" ("Source_id", name) VALUES (2, 'lenta.ru');
+INSERT INTO "News"."Sources" ("Source_id", name) VALUES (3, 'rbc.ru');
+INSERT INTO "News"."Sources" ("Source_id", name) VALUES (4, 'mail.ru');
+INSERT INTO "News"."Sources" ("Source_id", name) VALUES (5, 'vesti.ru');
+
+
+--
+-- TOC entry 3263 (class 0 OID 24786)
+-- Dependencies: 236
+-- Data for Name: pga_jobagent; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+INSERT INTO pgagent.pga_jobagent (jagpid, jaglogintime, jagstation) VALUES (9976, '2023-05-03 20:02:08.35502+05', 'DESKTOP-9U8UP8K');
+
+
+--
+-- TOC entry 3264 (class 0 OID 24795)
+-- Dependencies: 238
+-- Data for Name: pga_jobclass; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 3265 (class 0 OID 24805)
+-- Dependencies: 240
+-- Data for Name: pga_job; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+INSERT INTO pgagent.pga_job (jobid, jobjclid, jobname, jobdesc, jobhostagent, jobenabled, jobcreated, jobchanged, jobagentid, jobnextrun, joblastrun) VALUES (1, 1, 'Procedure_1', '', '', true, '2023-05-03 20:11:54.219351+05', '2023-05-03 20:11:54.219351+05', NULL, '2023-05-05 14:00:00+05', NULL);
+
+
+--
+-- TOC entry 3267 (class 0 OID 24853)
+-- Dependencies: 244
+-- Data for Name: pga_schedule; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+INSERT INTO pgagent.pga_schedule (jscid, jscjobid, jscname, jscdesc, jscenabled, jscstart, jscend, jscminutes, jschours, jscweekdays, jscmonthdays, jscmonths) VALUES (1, 1, 'Procedure_1', '', true, '2023-05-04 20:07:00+05', NULL, '{t,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f}', '{f,f,f,f,f,f,f,f,f,f,f,f,f,f,t,f,f,f,f,f,f,f,f,f}', '{f,f,f,f,f,f,f}', '{f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f}', '{f,f,f,f,f,f,f,f,f,f,f,f}');
+
+
+--
+-- TOC entry 3268 (class 0 OID 24881)
+-- Dependencies: 246
+-- Data for Name: pga_exception; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 3269 (class 0 OID 24895)
+-- Dependencies: 248
+-- Data for Name: pga_joblog; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 3266 (class 0 OID 24829)
+-- Dependencies: 242
+-- Data for Name: pga_jobstep; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+INSERT INTO pgagent.pga_jobstep (jstid, jstjobid, jstname, jstdesc, jstenabled, jstkind, jstcode, jstconnstr, jstdbname, jstonerror, jscnextrun) VALUES (1, 1, 'Procedure_1', '', true, 's', 'CALL "News"."procedure_1"()', '', 'postgres', 'f', NULL);
+
+
+--
+-- TOC entry 3270 (class 0 OID 24911)
+-- Dependencies: 250
+-- Data for Name: pga_jobsteplog; Type: TABLE DATA; Schema: pgagent; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 3570 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: BindingTable_Category_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."BindingTable_Category_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3571 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: BindingTable_News_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."BindingTable_News_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3572 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: Categories_Category_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."Categories_Category_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3573 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: Comments_Comment_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."Comments_Comment_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3574 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: Comments_News_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."Comments_News_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3575 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: News_Author_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."News_Author_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3576 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: News_Category_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."News_Category_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3577 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: News_News_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."News_News_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3578 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: Reactions_News_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."Reactions_News_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3579 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: Reactions_Reaction_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."Reactions_Reaction_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3580 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: Sources_Sources_id_seq; Type: SEQUENCE SET; Schema: News; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"News"."Sources_Sources_id_seq"', 1, false);
+
+
+--
+-- TOC entry 3332 (class 2606 OID 16579)
+-- Name: BindingTable BindingTable_pkey; Type: CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."BindingTable"
+    ADD CONSTRAINT "BindingTable_pkey" PRIMARY KEY ("News_id", "Category_id");
+
+
+--
+-- TOC entry 3324 (class 2606 OID 16435)
+-- Name: Categories Categories_pkey; Type: CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Categories"
+    ADD CONSTRAINT "Categories_pkey" PRIMARY KEY ("Category_id");
+
+
+--
+-- TOC entry 3330 (class 2606 OID 16508)
+-- Name: Comments Comment_id; Type: CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Comments"
+    ADD CONSTRAINT "Comment_id" PRIMARY KEY ("Comment_id");
+
+
+--
+-- TOC entry 3322 (class 2606 OID 16428)
+-- Name: News News_pkey; Type: CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."News"
+    ADD CONSTRAINT "News_pkey" PRIMARY KEY ("News_id");
+
+
+--
+-- TOC entry 3328 (class 2606 OID 16492)
+-- Name: Reactions Reactions_id; Type: CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Reactions"
+    ADD CONSTRAINT "Reactions_id" PRIMARY KEY ("Reaction_id");
+
+
+--
+-- TOC entry 3326 (class 2606 OID 16482)
+-- Name: Sources Sources_pkey; Type: CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Sources"
+    ADD CONSTRAINT "Sources_pkey" PRIMARY KEY ("Source_id");
+
+
+--
+-- TOC entry 3356 (class 2606 OID 16454)
+-- Name: News Category_id; Type: FK CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."News"
+    ADD CONSTRAINT "Category_id" FOREIGN KEY ("Category_id") REFERENCES "News"."Categories"("Category_id") NOT VALID;
+
+
+--
+-- TOC entry 3361 (class 2606 OID 16585)
+-- Name: BindingTable Category_id; Type: FK CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."BindingTable"
+    ADD CONSTRAINT "Category_id" FOREIGN KEY ("Category_id") REFERENCES "News"."Categories"("Category_id");
+
+
+--
+-- TOC entry 3358 (class 2606 OID 16493)
+-- Name: Reactions News_id; Type: FK CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Reactions"
+    ADD CONSTRAINT "News_id" FOREIGN KEY ("News_id") REFERENCES "News"."News"("News_id");
+
+
+--
+-- TOC entry 3359 (class 2606 OID 16509)
+-- Name: Comments News_id; Type: FK CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."Comments"
+    ADD CONSTRAINT "News_id" FOREIGN KEY ("News_id") REFERENCES "News"."News"("News_id");
+
+
+--
+-- TOC entry 3360 (class 2606 OID 16580)
+-- Name: BindingTable News_id; Type: FK CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."BindingTable"
+    ADD CONSTRAINT "News_id" FOREIGN KEY ("News_id") REFERENCES "News"."News"("News_id");
+
+
+--
+-- TOC entry 3357 (class 2606 OID 16514)
+-- Name: News Source_id; Type: FK CONSTRAINT; Schema: News; Owner: postgres
+--
+
+ALTER TABLE ONLY "News"."News"
+    ADD CONSTRAINT "Source_id" FOREIGN KEY ("Source_id") REFERENCES "News"."Sources"("Source_id") NOT VALID;
+
+
+-- Completed on 2023-05-04 19:27:06
+
+--
+-- PostgreSQL database dump complete
+--
+
