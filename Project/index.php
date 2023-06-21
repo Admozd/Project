@@ -1,7 +1,9 @@
 <?php
 session_start();
 require("db_connect.php");
-//unset($_SESSION['user']);
+require("addFile.php");
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,9 +49,27 @@ require("db_connect.php");
     <section class="services">
         <div class="container">
             <div class="services-row">
+                <?php
+                    $result = $conn->query("SELECT id, header, text, date, image FROM news.news");
+                    while ($row = $result->fetch()) {
+                        ?>
+                
+                
+                        <div class="service-card">
+                            
+                            <img class="service-card-img" src="<?=$row['image']?>" width = "184px" height = "120px">
+                            <p><?=$row['header']?></p>
+                        </div>
+                        
+                        <?php
+                        $id = $row['id'];
+                    }
+                ?>
 
 
-                <div class="service-card">
+
+
+                <!--<div class="service-card">
                     <img class = "service-card-img" src="./img/news_1.png" alt="">
                     <p>YouTube стал показывать по пять рекламных роликов у некоторых пользователей</p>
                     
@@ -72,13 +92,37 @@ require("db_connect.php");
                     <img class = "service-card-img" src="./img/news_4.png" alt="">
                     <p>«Ростех» разработал мобильный комплекс для поиска угнанных автомобилей</p>
                     
-                </div>
+                </div>-->
 
 
             </div>
         </div>
     </section>
 
+    <div class="container">
+        <p>Добавить новость</p> <br>
+        <form action="/addFile.php" method = "post" autocomplete = "off" enctype = "multipart/form-data">
+                <div>
+                    <p>Заголовок новости</p>
+                    <textarea name="header" class="text_area" cols="50" rows="3"></textarea>
+                </div>
+                <div>
+                    <p>Текст новости</p>
+                    <textarea name="text" class="text_area" cols="70" rows="7"></textarea>
+                </div>
+                <div>
+                    <p>Дата новости</p>
+                    <input type="text" name="date" required value=""> 
+                </div>
+                <br>
+                <p>Фото</p>
+                <input type="file" name = "file">
+                <button type = "submit" name = "submit">Добавить</button>
+                
+                
+        </form>
+    </div>
+    
 
 
 
@@ -88,7 +132,7 @@ require("db_connect.php");
         <form method="POST" action="form_Opinion.php">
             <p>
                 
-                Оставьте, пожалуйста, отзыв! <br>
+                <br> Оставьте, пожалуйста, отзыв! <br>
                 <br>
                 <b>Какую оценку поставите нашему сервису?</b><br>
                     <input type="radio" name = "rating" required="" value="5"> 5 <br>
