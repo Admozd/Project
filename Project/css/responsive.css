@@ -1,0 +1,30 @@
+.container {
+    max-width: 1200px;
+}
+
+.header {
+    background-color: #E2ADF2;
+    width: 100%;
+}
+
+.bord{
+    width: 49%;
+    background-color: #ffb549
+}
+
+
+/* 1000px */
+@media only screen and (max-width: 1000px) {
+    .bord{
+        width: 90%;
+        background-color: #ffb549
+    }
+}
+
+/* 600px */
+@media only screen and (max-width: 600px) {
+    .bord {
+        width: 90%;
+        background-color: #ffb549
+    }
+}

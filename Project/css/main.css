@@ -7,6 +7,10 @@ body {
     background: #5CCCCC;
 }
 
+.label {
+    display: block;
+}
+
 .container {
     max-width: 1230px;
     padding: 0 30px;
@@ -113,6 +117,10 @@ body {
         display: block;
     }
 
+    .header {
+        min-width: 100px;
+    }
+    
 
     .nav.open .nav-list {
         position: fixed;
